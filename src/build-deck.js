@@ -219,9 +219,12 @@ async function main() {
   fs.mkdirSync(outDir, { recursive: true });
   const out = path.join(outDir, 'AIonOS_Portek_Remade_Deck.pptx');
   await pptx.writeFile({ fileName: out });
-  const assetCopy = path.join(__dirname, '../assets/AIonOS_Portek_Remade_Deck.pptx');
-  fs.copyFileSync(out, assetCopy);
   console.log(`Wrote ${out}`);
-  console.log(`Copied ${assetCopy}`);
+
+  if (process.env.UPDATE_ASSET_COPY === '1') {
+    const assetCopy = path.join(__dirname, '../assets/AIonOS_Portek_Remade_Deck.pptx');
+    fs.copyFileSync(out, assetCopy);
+    console.log(`Copied ${assetCopy}`);
+  }
 }
 main().catch(err => { console.error(err); process.exit(1); });

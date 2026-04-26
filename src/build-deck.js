@@ -2,8 +2,103 @@ const pptxgen = require('pptxgenjs');
 const fs = require('fs');
 const path = require('path');
 
-const warnIfSlideHasOverlaps = () => {};
-const warnIfSlideElementsOutOfBounds = () => {};
+function normalizeRect(el) {
+  if (typeof el.x !== 'number' || typeof el.y !== 'number' || typeof el.w !== 'number' || typeof el.h !== 'number') return null;
+  return { x1: el.x, y1: el.y, x2: el.x + el.w, y2: el.y + el.h, w: el.w, h: el.h };
+}
+
+function overlapArea(a, b) {
+  const x = Math.max(0, Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1));
+  const y = Math.max(0, Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1));
+  return x * y;
+}
+
+function isContained(a, b) {
+  return a.x1 >= b.x1 && a.y1 >= b.y1 && a.x2 <= b.x2 && a.y2 <= b.y2;
+}
+
+function isDecorativeShape(el) {
+  if (el.kind !== 'shape') return false;
+  if (el.shapeType === pptx.ShapeType.arc || el.shapeType === pptx.ShapeType.line) return true;
+  if (el.shapeType === pptx.ShapeType.rect && el.x === 0 && el.y === 0 && Math.abs(el.w - W) < 0.001 && Math.abs(el.h - H) < 0.001) return true;
+  return false;
+}
+
+function ensureSlideInstrumentation(slide) {
+  if (slide._instrumented) return;
+  slide._instrumented = true;
+  slide._elements = [];
+
+  const originalAddText = slide.addText.bind(slide);
+  const originalAddShape = slide.addShape.bind(slide);
+
+  slide.addText = (text, opts = {}) => {
+    slide._elements.push({
+      kind: 'text',
+      label: typeof text === 'string' ? text.slice(0, 40) : 'rich-text',
+      x: opts.x,
+      y: opts.y,
+      w: opts.w,
+      h: opts.h
+    });
+    return originalAddText(text, opts);
+  };
+
+  slide.addShape = (shapeType, opts = {}) => {
+    slide._elements.push({
+      kind: 'shape',
+      shapeType,
+      x: opts.x,
+      y: opts.y,
+      w: opts.w,
+      h: opts.h
+    });
+    return originalAddShape(shapeType, opts);
+  };
+}
+
+const warnIfSlideHasOverlaps = (slide, _pptx, opts = {}) => {
+  const els = (slide._elements || []).filter(el => normalizeRect(el));
+  const issues = [];
+
+  for (let i = 0; i < els.length; i++) {
+    for (let j = i + 1; j < els.length; j++) {
+      const a = els[i];
+      const b = els[j];
+      if (opts.ignoreLines && (a.shapeType === pptx.ShapeType.line || b.shapeType === pptx.ShapeType.line)) continue;
+      if (opts.ignoreDecorativeShapes && (isDecorativeShape(a) || isDecorativeShape(b))) continue;
+      const ar = normalizeRect(a);
+      const br = normalizeRect(b);
+      const area = overlapArea(ar, br);
+      if (area < 0.015) continue;
+      if (opts.muteContainment && (isContained(ar, br) || isContained(br, ar))) continue;
+      issues.push([a, b, area]);
+    }
+  }
+
+  if (issues.length > 0) {
+    console.warn(`Slide ${slide._slideNo || '?'} overlap warnings: ${issues.length}`);
+    issues.slice(0, 8).forEach(([a, b, area], idx) => {
+      console.warn(`  [${idx + 1}] ${a.kind} overlaps ${b.kind} (area=${area.toFixed(3)})`);
+    });
+  }
+};
+
+const warnIfSlideElementsOutOfBounds = (slide, _pptx) => {
+  const out = (slide._elements || []).filter(el => {
+    const r = normalizeRect(el);
+    if (!r) return false;
+    return r.x1 < -0.001 || r.y1 < -0.001 || r.x2 > W + 0.001 || r.y2 > H + 0.001;
+  });
+
+  if (out.length > 0) {
+    console.warn(`Slide ${slide._slideNo || '?'} out-of-bounds elements: ${out.length}`);
+    out.slice(0, 8).forEach((el, idx) => {
+      const r = normalizeRect(el);
+      console.warn(`  [${idx + 1}] ${el.kind} @ x=${r.x1.toFixed(2)}, y=${r.y1.toFixed(2)}, w=${r.w.toFixed(2)}, h=${r.h.toFixed(2)}`);
+    });
+  }
+};
 
 const brand = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/brand.json'), 'utf8'));
 const pptx = new pptxgen();
@@ -42,6 +137,8 @@ const W = 13.333;
 const H = 7.5;
 
 function addBg(slide, n, kicker = 'AIonOS × Portek | Business outcomes transformation') {
+  ensureSlideInstrumentation(slide);
+  slide._slideNo = n;
   slide.background = { color: C.navy };
   slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: W, h: H, fill: { color: C.navy }, line: { transparency: 100 } });
   slide.addShape(pptx.ShapeType.arc, { x: 9.85, y: 0.2, w: 2.85, h: 2.85, adjustPoint: 0.45, rotate: 18, line: { color: C.cyan, transparency: 74, width: 1.6 }, fill: { color: C.navy, transparency: 100 } });

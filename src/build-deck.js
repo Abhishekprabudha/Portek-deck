@@ -1,7 +1,15 @@
 const pptxgen = require('pptxgenjs');
 const fs = require('fs');
 const path = require('path');
-const { warnIfSlideHasOverlaps, warnIfSlideElementsOutOfBounds } = require('/home/oai/skills/slides/pptxgenjs_helpers');
+
+const helperPath = '/home/oai/skills/slides/pptxgenjs_helpers';
+const slideValidationHelpers = fs.existsSync(helperPath)
+  ? require(helperPath)
+  : {
+      warnIfSlideHasOverlaps: () => {},
+      warnIfSlideElementsOutOfBounds: () => {}
+    };
+const { warnIfSlideHasOverlaps, warnIfSlideElementsOutOfBounds } = slideValidationHelpers;
 
 const brand = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/brand.json'), 'utf8'));
 const pptx = new pptxgen();

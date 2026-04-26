@@ -1,21 +1,23 @@
-# AIonOS x Portek Deck Remake
+# AIonOS x Portek Deck Build
 
-This repository generates a remade PowerPoint deck from code using `pptxgenjs`.
+This repository now builds the exact `AIonOS_Portek_Transformation_Deck.pptx` from the knowledge base via code-driven workflows.
 
 ## Structure
 
 ```text
 portek-deck-remake/
-├── .github/workflows/build-deck.yml   # GitHub Actions workflow to build and upload the deck
+├── .github/workflows/build-deck.yml            # GitHub Actions workflow to build and upload the deck artifact
 ├── assets/
-│   ├── brand.json                     # Theme tokens
-│   └── AIonOS_Portek_Remade_Deck.pptx # Prebuilt deck copy
+│   ├── brand.json                              # Legacy theme tokens (kept for compatibility)
+│   └── AIonOS_Portek_Remade_Deck.pptx          # Optional legacy copy target
 ├── dist/
-│   └── AIonOS_Portek_Remade_Deck.pptx # Local build output
+│   ├── AIonOS_Portek_Transformation_Deck.pptx  # Primary build output
+│   └── AIonOS_Portek_Remade_Deck.pptx          # Backward-compatible output path
 ├── src/
-│   └── build-deck.js                  # Deck source code
-├── knowledge-base/                    # Source files to guide slide updates
+│   └── build-deck.js                           # Build workflow (copies source deck from knowledge base)
+├── knowledge-base/
 │   ├── documents/
+│   │   └── AIonOS_Portek_Transformation_Deck.pptx  # Source-of-truth deck
 │   ├── images/
 │   ├── data/
 │   └── README.md
@@ -27,13 +29,13 @@ portek-deck-remake/
 
 ```bash
 npm install
-npm start
 npm run build
 ```
 
-The generated deck will be saved to:
+Generated deck outputs:
 
 ```text
+dist/AIonOS_Portek_Transformation_Deck.pptx
 dist/AIonOS_Portek_Remade_Deck.pptx
 ```
 
@@ -41,19 +43,9 @@ dist/AIonOS_Portek_Remade_Deck.pptx
 
 1. Push this repository to GitHub.
 2. Open the **Actions** tab.
-3. Run **Build PowerPoint deck** manually, or push to `main`.
-4. Download the generated `aionos-portek-remade-deck` artifact.
+3. Run **Build PowerPoint deck**.
+4. Download the generated `aionos-portek-transformation-deck` artifact.
 
-## Editing
+## Updating the source deck
 
-Update slide content, layout, or styling in `src/build-deck.js`. Theme colors are centralized in `assets/brand.json`.
-
-## Knowledge base for source materials
-
-Add any supporting files (documents, images, exports, etc.) under `knowledge-base/` before updating slides.
-
-- `knowledge-base/documents/` for notes, reports, transcripts, markdown, PDFs
-- `knowledge-base/images/` for screenshots, diagrams, visuals
-- `knowledge-base/data/` for CSV/JSON/XLSX inputs
-
-See `knowledge-base/README.md` for details.
+Replace `knowledge-base/documents/AIonOS_Portek_Transformation_Deck.pptx` with the newest approved version, then re-run the build workflow.

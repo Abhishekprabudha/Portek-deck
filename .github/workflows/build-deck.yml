@@ -23,5 +23,5 @@ jobs:
       - name: Upload deck artifact
         uses: actions/upload-artifact@v4
         with:
-          name: aionos-portek-remade-deck
-          path: dist/AIonOS_Portek_Remade_Deck.pptx
+          name: aionos-portek-transformation-deck
+          path: dist/AIonOS_Portek_Transformation_Deck.pptx

@@ -1,0 +1,13 @@
+{
+  "name": "portek-deck-remake",
+  "version": "1.0.0",
+  "description": "Builds the AIonOS x Portek transformation deck from source.",
+  "main": "src/build-deck.js",
+  "scripts": {
+    "build": "node src/build-deck.js",
+    "clean": "rm -rf dist && mkdir -p dist"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
+  }
+}

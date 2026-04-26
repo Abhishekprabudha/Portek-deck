@@ -4,6 +4,7 @@
   "description": "Builds the AIonOS x Portek transformation deck from source.",
   "main": "src/build-deck.js",
   "scripts": {
+    "start": "node src/build-deck.js",
     "build": "node src/build-deck.js",
     "clean": "node src/clean.js"
   },

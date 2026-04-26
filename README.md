@@ -14,6 +14,11 @@ portek-deck-remake/
 │   └── AIonOS_Portek_Remade_Deck.pptx # Local build output
 ├── src/
 │   └── build-deck.js                  # Deck source code
+├── knowledge-base/                    # Source files to guide slide updates
+│   ├── documents/
+│   ├── images/
+│   ├── data/
+│   └── README.md
 ├── package.json
 └── README.md
 ```
@@ -42,3 +47,13 @@ dist/AIonOS_Portek_Remade_Deck.pptx
 ## Editing
 
 Update slide content, layout, or styling in `src/build-deck.js`. Theme colors are centralized in `assets/brand.json`.
+
+## Knowledge base for source materials
+
+Add any supporting files (documents, images, exports, etc.) under `knowledge-base/` before updating slides.
+
+- `knowledge-base/documents/` for notes, reports, transcripts, markdown, PDFs
+- `knowledge-base/images/` for screenshots, diagrams, visuals
+- `knowledge-base/data/` for CSV/JSON/XLSX inputs
+
+See `knowledge-base/README.md` for details.

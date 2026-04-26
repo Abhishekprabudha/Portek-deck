@@ -109,8 +109,8 @@ pptx.title = 'AIonOS x Portek | 90-Day to 18-Month Transformation Playbook';
 pptx.company = 'AIonOS';
 pptx.lang = 'en-US';
 pptx.theme = {
-  headFontFace: 'Aptos Display',
-  bodyFontFace: 'Aptos',
+  headFontFace: 'Calibri',
+  bodyFontFace: 'Calibri',
   lang: 'en-US'
 };
 pptx.defineLayout({ name: 'CUSTOM_WIDE', width: 13.333, height: 7.5 });
@@ -121,15 +121,15 @@ pptx.slideHeight = 7.5;
 pptx._slides = pptx._slides || [];
 
 const C = {
-  navy: brand.primary,
-  blue: brand.secondary,
+  navy: '0A2540',
+  blue: '12486B',
   accent: brand.accent,
   cyan: brand.accent2,
-  paper: brand.paper,
-  ink: brand.ink,
-  muted: 'A9BBC7',
-  line: '1F526E',
-  dark2: '092437',
+  paper: 'FFFFFF',
+  ink: '142B3F',
+  muted: '5D6D7E',
+  line: '9BB7CC',
+  dark2: '0E2F4A',
   white: 'FFFFFF'
 };
 
@@ -139,16 +139,16 @@ const H = 7.5;
 function addBg(slide, n, kicker = 'AIonOS × Portek | Big 4 style business outcomes story') {
   ensureSlideInstrumentation(slide);
   slide._slideNo = n;
-  slide.background = { color: C.navy };
-  slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: W, h: H, fill: { color: C.navy }, line: { transparency: 100 } });
-  slide.addShape(pptx.ShapeType.arc, { x: 9.85, y: 0.2, w: 2.85, h: 2.85, adjustPoint: 0.45, rotate: 18, line: { color: C.cyan, transparency: 74, width: 1.6 }, fill: { color: C.navy, transparency: 100 } });
-  slide.addShape(pptx.ShapeType.arc, { x: 0.28, y: 5.08, w: 1.95, h: 1.95, adjustPoint: 0.45, rotate: -30, line: { color: C.accent, transparency: 80, width: 1.4 }, fill: { color: C.navy, transparency: 100 } });
+  slide.background = { color: C.paper };
+  slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: W, h: H, fill: { color: C.paper }, line: { transparency: 100 } });
+  slide.addShape(pptx.ShapeType.arc, { x: 9.85, y: 0.2, w: 2.85, h: 2.85, adjustPoint: 0.45, rotate: 18, line: { color: C.cyan, transparency: 70, width: 1.6 }, fill: { color: C.paper, transparency: 100 } });
+  slide.addShape(pptx.ShapeType.arc, { x: 0.28, y: 5.08, w: 1.95, h: 1.95, adjustPoint: 0.45, rotate: -30, line: { color: C.accent, transparency: 72, width: 1.4 }, fill: { color: C.paper, transparency: 100 } });
   slide.addText(kicker, { x: 0.55, y: 7.08, w: 7.8, h: 0.22, fontFace: 'Aptos', fontSize: 8.7, color: C.muted, margin: 0 });
   slide.addText(String(n), { x: 12.45, y: 7.05, w: 0.35, h: 0.24, fontFace: 'Aptos', fontSize: 8.5, color: C.muted, bold: true, align: 'right', margin: 0 });
 }
 function title(slide, label, main, sub) {
   slide.addText(label, { x: 0.62, y: 0.48, w: 2.9, h: 0.25, fontSize: 9.5, bold: true, color: C.accent, charSpace: 1.4, margin: 0 });
-  slide.addText(main, { x: 0.62, y: 0.84, w: 8.6, h: 0.52, fontFace: 'Aptos Display', fontSize: 25.5, bold: true, color: C.white, fit: 'shrink', margin: 0 });
+  slide.addText(main, { x: 0.62, y: 0.84, w: 8.6, h: 0.52, fontFace: 'Calibri', fontSize: 25.5, bold: true, color: C.navy, fit: 'shrink', margin: 0 });
   if (sub) slide.addText(sub, { x: 0.64, y: 1.44, w: 8.4, h: 0.36, fontSize: 12.8, color: C.muted, margin: 0 });
 }
 function metric(slide, x, y, w, num, text, color = C.accent) {
@@ -156,8 +156,10 @@ function metric(slide, x, y, w, num, text, color = C.accent) {
   slide.addText(text, { x, y: y + 0.42, w, h: 0.28, fontSize: 8.8, color: C.muted, align: 'center', margin: 0 });
 }
 function chip(slide, x, y, w, h, txt, opts = {}) {
+  const fillColor = (opts.fill || C.dark2).toUpperCase();
+  const useLightText = ['0A2540', '12486B', '0E2F4A'].includes(fillColor);
   slide.addShape(pptx.ShapeType.roundRect, { x, y, w, h, rectRadius: 0.08, fill: { color: opts.fill || C.dark2, transparency: opts.transparency || 0 }, line: { color: opts.line || C.line, transparency: opts.lineT || 10, width: 1.1 } });
-  slide.addText(txt, { x: x + 0.14, y: y + 0.08, w: w - 0.28, h: h - 0.14, fontSize: opts.fs || 10.2, bold: opts.bold || false, color: opts.color || C.ink, fit: 'shrink', margin: 0.01, valign: 'mid' });
+  slide.addText(txt, { x: x + 0.14, y: y + 0.08, w: w - 0.28, h: h - 0.14, fontSize: opts.fs || 10.2, bold: opts.bold || false, color: opts.color || (useLightText ? C.white : C.ink), fit: 'shrink', margin: 0.01, valign: 'mid' });
 }
 function validate(slide) {
   warnIfSlideHasOverlaps(slide, pptx, { ignoreLines: true, ignoreDecorativeShapes: true, muteContainment: true });
@@ -171,7 +173,7 @@ function addArrow(slide, x1, y1, x2, y2, color = C.cyan) {
 {
   const s = pptx.addSlide(); addBg(s, 1, 'AIonOS × Portek');
   s.addText('AIonOS × Portek', { x: 0.68, y: 0.65, w: 3.7, h: 0.32, fontSize: 15, color: C.accent, bold: true, margin: 0 });
-  s.addText('From Port Operator\nTo AI-First Port Network', { x: 0.65, y: 1.52, w: 7.6, h: 1.48, fontFace: 'Aptos Display', fontSize: 37, bold: true, color: C.white, breakLine: false, fit: 'shrink', margin: 0 });
+  s.addText('From Port Operator\nTo AI-First Port Network', { x: 0.65, y: 1.52, w: 7.6, h: 1.48, fontFace: 'Calibri', fontSize: 37, bold: true, color: C.navy, breakLine: false, fit: 'shrink', margin: 0 });
   s.addText('Build a cross-port intelligence layer above existing systems to lift throughput, uptime, and cash performance.', { x: 0.7, y: 3.25, w: 7.0, h: 0.65, fontSize: 16, color: C.ink, fit: 'shrink', margin: 0 });
   chip(s, 0.7, 4.37, 3.0, 0.48, 'Board Lens: Speed | Cost | Reliability', { fill: C.blue, line: C.accent, bold: true, color: C.accent, fs: 10.5 });
   s.addText('Prepared for Portek executive leadership', { x: 0.72, y: 5.1, w: 4.2, h: 0.28, fontSize: 10.5, color: C.muted, margin: 0 });
@@ -228,7 +230,7 @@ function addArrow(slide, x1, y1, x2, y2, color = C.cyan) {
 {
   const s = pptx.addSlide(); addBg(s, 4); title(s, 'TARGET OPERATING MODEL', 'Keep core systems. Add an AI decision layer.', 'AIonOS acts as the orchestrator: unify data, run agents, execute playbooks.');
   const y0=2.25;
-  ['TOS / Vessel','Yard / Gate','Equipment','Engineering','Finance / Commercial'].forEach((t,i)=>chip(s,0.75+i*2.45,y0,2.0,0.62,t,{fill:C.dark2,line:C.line,color:C.ink,fs:10.8,bold:true}));
+  ['TOS / Vessel','Yard / Gate','Equipment','Engineering','Finance / Commercial'].forEach((t,i)=>chip(s,0.75+i*2.45,y0,2.0,0.62,t,{fill:C.dark2,line:C.line,color:C.white,fs:10.8,bold:true}));
   s.addText('local systems connect into one governed intelligence core', { x: 3.25, y: 3.05, w: 6.8, h: 0.22, fontSize: 9.2, color: C.muted, align: 'center', margin: 0 });
   s.addShape(pptx.ShapeType.roundRect,{x:4.15,y:3.55,w:5.05,h:1.25,rectRadius:0.1,fill:{color:C.blue},line:{color:C.accent,width:1.5}});
   s.addText('AIonOS\nAgent Ops + Data Ops + Cloud Ops',{x:4.35,y:3.78,w:4.65,h:0.72,fontSize:20,bold:true,color:C.white,align:'center',fit:'shrink',margin:0});
@@ -286,7 +288,7 @@ function addArrow(slide, x1, y1, x2, y2, color = C.cyan) {
 {
   const s = pptx.addSlide(); addBg(s, 8); title(s, 'EXECUTION ROADMAP', '90-day proof. 18-month transformation.', 'Designed for speed: prove value quickly, then replicate terminal-by-terminal.');
   const stages = [ ['0–4 weeks','Diagnose + baseline','Map systems, data and KPI baseline for 1–2 pilot terminals.','Pilot scope locked'], ['5–12 weeks','Control Tower live','Deploy vessel/yard/equipment cockpit with exception workflows.','Visible decision speed'], ['3–9 months','Agentic optimisation','Add berth, crane and yard agents with human-in-loop controls.','Measured KPI uplift'], ['9–18 months','Network scale-up','Industrialise playbook across regions with benchmark loops.','AI operating model at scale'] ];
-  stages.forEach((st,i)=>{ const x=0.8+i*3.05; if(i>0)addArrow(s,x-0.65,3.12,x-0.15,3.12,C.accent); s.addText(st[0],{x,y:2.1,w:2.1,h:0.26,fontSize:10.5,bold:true,color:C.accent,margin:0}); s.addText(st[1],{x,y:2.48,w:2.35,h:0.42,fontSize:16.5,bold:true,color:C.white,fit:'shrink',margin:0}); s.addText(st[2],{x,y:3.1,w:2.3,h:0.55,fontSize:9.5,color:C.muted,fit:'shrink',margin:0}); s.addShape(pptx.ShapeType.roundRect,{x,y:4.18,w:2.35,h:0.65,rectRadius:0.06,fill:{color:i===1?C.blue:C.dark2},line:{color:i===1?C.accent:C.line,width:1.0}}); s.addText(st[3],{x:x+0.15,y:4.36,w:2.05,h:0.18,fontSize:8.4,bold:true,color:C.ink,fit:'shrink',margin:0}); });
+  stages.forEach((st,i)=>{ const x=0.8+i*3.05; if(i>0)addArrow(s,x-0.65,3.12,x-0.15,3.12,C.accent); s.addText(st[0],{x,y:2.1,w:2.1,h:0.26,fontSize:10.5,bold:true,color:C.accent,margin:0}); s.addText(st[1],{x,y:2.48,w:2.35,h:0.42,fontSize:16.5,bold:true,color:C.white,fit:'shrink',margin:0}); s.addText(st[2],{x,y:3.1,w:2.3,h:0.55,fontSize:9.5,color:C.muted,fit:'shrink',margin:0}); s.addShape(pptx.ShapeType.roundRect,{x,y:4.18,w:2.35,h:0.65,rectRadius:0.06,fill:{color:i===1?C.blue:C.dark2},line:{color:i===1?C.accent:C.line,width:1.0}}); s.addText(st[3],{x:x+0.15,y:4.36,w:2.05,h:0.18,fontSize:8.4,bold:true,color:C.white,fit:'shrink',margin:0}); });
   s.addText('Principle: no rip-and-replace. Layer intelligence on top of existing terminal systems.',{x:1.25,y:5.78,w:10.7,h:0.28,fontSize:12.2,color:C.ink,align:'center',margin:0});
   validate(s);
 }
@@ -295,13 +297,13 @@ function addArrow(slide, x1, y1, x2, y2, color = C.cyan) {
 {
   const s = pptx.addSlide(); addBg(s, 9, 'AIonOS × Portek');
   s.addText('Recommended board decision', {x:0.72,y:0.78,w:4.2,h:0.28,fontSize:12,bold:true,color:C.accent,margin:0});
-  s.addText('Approve a 90-day AIonOS x Portek pilot for Control Tower + Agentic Twin.', {x:0.72,y:1.25,w:7.7,h:0.92,fontFace:'Aptos Display',fontSize:28,bold:true,color:C.white,fit:'shrink',margin:0});
+  s.addText('Approve a 90-day AIonOS x Portek pilot for Control Tower + Agentic Twin.', {x:0.72,y:1.25,w:7.7,h:0.92,fontFace:'Calibri',fontSize:28,bold:true,color:C.navy,fit:'shrink',margin:0});
   const next = [['Decision','Nominate sponsor + pilot terminals'],['Data','Open TOS, yard, vessel, engineering feeds'],['KPI','Freeze baseline for speed, dwell, uptime, cash'],['Build','Stand up cockpit + playbooks in 12 weeks']];
   next.forEach((n,i)=>{ const y=2.72+i*0.82; s.addText(n[0],{x:0.9,y,w:1.1,h:0.25,fontSize:12,bold:true,color:C.accent,margin:0}); s.addText(n[1],{x:2.05,y,w:5.8,h:0.25,fontSize:12,color:C.ink,margin:0}); });
   s.addShape(pptx.ShapeType.roundRect,{x:8.35,y:1.25,w:3.7,h:4.7,rectRadius:0.12,fill:{color:C.blue},line:{color:C.accent,width:1.4}});
   s.addText('Outcome', {x:8.75,y:1.85,w:2.9,h:0.3,fontSize:13,bold:true,color:C.accent,align:'center',margin:0});
   s.addText('Portek becomes a self-improving network where every terminal learns from every terminal.', {x:8.75,y:2.5,w:2.9,h:1.15,fontSize:16.5,bold:true,color:C.white,align:'center',fit:'shrink',margin:0});
-  ['HQ command','Terminal autonomy','Cross-port learning'].forEach((t,i)=>chip(s,8.82,4.15+i*0.55,2.78,0.34,t,{fill:C.navy,line:C.line,color:C.ink,fs:8.8,bold:true}));
+  ['HQ command','Terminal autonomy','Cross-port learning'].forEach((t,i)=>chip(s,8.82,4.15+i*0.55,2.78,0.34,t,{fill:C.navy,line:C.line,color:C.white,fs:8.8,bold:true}));
   validate(s);
 }
 
